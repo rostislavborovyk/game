@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'account',
     'game',
     'main_window',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'game.wsgi.application'
+
+ASGI_APPLICATION = 'game.routing.application'
 
 
 # Database
