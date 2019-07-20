@@ -1,28 +1,46 @@
 import asyncio
 import json
+from asgiref.sync import async_to_sync
 
 from channels.consumer import AsyncConsumer
+
 
 class ChatConsumer(AsyncConsumer):
 
     async def websocket_connect(self, event):
-        print('connection succesfull', event)
+        await self.channel_layer.group_add(
+            'global',
+            self.channel_name,
+        )
         await self.send({
-            'type' : 'websocket.accept'
+            'type': 'websocket.accept'
         })
 
-    async def websocket_receive(self,event):
-        print('received: ', event)
+
+    async def websocket_receive(self, event):
+        username = self.scope['user'].username
+        if username == "":
+            username = "AnonymusUser"
         myresponse = {
             'text': event.get('text'),
-            'user': self.scope['user'].username,
+            'user': username,
         }
         resp = json.dumps(myresponse)
+        await self.channel_layer.group_send(
+            'global',
+            {
+                'type': 'chat_message',
+                'text' : resp,
+            }
+        )
+
+    async def chat_message(self, event):
+        print('send', event)
         await self.send({
             'type': 'websocket.send',
-            'text': resp,
-        })
+            'text': event['text'],
+        }
+        )
 
-    async def websocket_disconnect(self,event):
+    async def websocket_disconnect(self, event):
         print('closed', event)
-

@@ -32,11 +32,11 @@
         <button id="chat-message-submit" type="submit" class="btn btn-primary">Send</button>
     </form>
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
 <script>
     console.log(window.location)
     const socket_url = 'ws://' + window.location.host + window.location.pathname;
-    let socket = new WebSocket(socket_url);
+    let socket = new ReconnectingWebSocket(socket_url);
     let formData = $("#from");
     socket.onmessage = function (event) {
         console.log(event)
@@ -50,11 +50,22 @@
         });
     };
 
-    socket.onmessage = function (event){
+    socket.onmessage = function (event) {
         console.log(event);
         let textArea = $('#chat-log');
         let chatData = JSON.parse(event.data);
-        textArea.append(chatData.user + ": " + chatData.text);
+
+        function addToTextarea($ta, text) {
+            var val = $ta.val();
+            if (val) {
+                $ta.val(val + '\n' + text);
+            } else {
+                $ta.val(text);
+            }
+            $ta.scrollTop($ta[0].scrollHeight);
+        }
+
+        addToTextarea(textArea,chatData.user + ": " + chatData.text);
     }
     socket.onclose = function (event) {
         console.log('socket close', event)
