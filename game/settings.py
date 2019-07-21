@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'game',
     'main_window',
     'channels',
+    'tanks_game',
 ]
 
 MIDDLEWARE = [
