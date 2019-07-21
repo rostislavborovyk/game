@@ -1,13 +1,14 @@
 import asyncio
 import json
-from asgiref.sync import async_to_sync
-
+from .models import OnlineUser
 from channels.consumer import AsyncConsumer
+from channels.db import database_sync_to_async
 
 
 class ChatConsumer(AsyncConsumer):
 
     async def websocket_connect(self, event):
+        await self.create_online_user(self.scope['user'])
         await self.channel_layer.group_add(
             'global',
             self.channel_name,
@@ -15,7 +16,6 @@ class ChatConsumer(AsyncConsumer):
         await self.send({
             'type': 'websocket.accept'
         })
-
 
     async def websocket_receive(self, event):
         username = self.scope['user'].username
@@ -30,7 +30,7 @@ class ChatConsumer(AsyncConsumer):
             'global',
             {
                 'type': 'chat_message',
-                'text' : resp,
+                'text': resp,
             }
         )
 
@@ -44,3 +44,12 @@ class ChatConsumer(AsyncConsumer):
 
     async def websocket_disconnect(self, event):
         print('closed', event)
+        await self.delete_online_user(self.scope['user'])
+
+    @database_sync_to_async
+    def create_online_user(self, user):
+        OnlineUser.objects.create(user=user)
+
+    @database_sync_to_async
+    def delete_online_user(self, user):
+        OnlineUser.objects.filter(user=user).delete()
