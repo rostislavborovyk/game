@@ -23,7 +23,9 @@
     </div>
 </nav>
 <div class="form-group">
-    <textarea id="chat-log" cols="100" class='form-control' rows="20" style="width: 300px;resize: none;"></textarea>
+    <textarea id="chat-log" cols="100" class='form-control' rows="20" style="width: 300px;resize: none;" readonly>
+
+    </textarea>
 </div>
 <div class="form-inline">
     <form id="from" method="post">
@@ -33,12 +35,28 @@
     </form>
 </div>
 <a href="http://localhost:8000/tanks_game/1/">Go to room 1 and test a game</a>
+<textarea cols="100" class='form-control' rows="20" style="width: 300px;resize: none;" id="online" readonly>
+    {% for user_online in online %}
+        {{ user_online.user }}
+    {% endfor %}
+</textarea>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
 <script>
     console.log(window.location)
     const socket_url = 'ws://' + window.location.host + window.location.pathname;
     let socket = new ReconnectingWebSocket(socket_url);
     let formData = $("#from");
+
+    function addToTextarea($ta, text) {
+        var val = $ta.val();
+        if (val) {
+            $ta.val(val + '\n' + text);
+        } else {
+            $ta.val(text);
+        }
+        $ta.scrollTop($ta[0].scrollHeight);
+    }
+
     socket.onmessage = function (event) {
         console.log(event)
     };
@@ -47,26 +65,18 @@
         formData.submit(function (e) {
             e.preventDefault();
 
-            socket.send($('#chat-message-input').val());
+
+            socket.send($('#chat-message-input').val())
         });
+        const texti = $('#online');
+        addToTextarea(texti, '{{ user }}');
     };
 
     socket.onmessage = function (event) {
         console.log(event);
         let textArea = $('#chat-log');
         let chatData = JSON.parse(event.data);
-
-        function addToTextarea($ta, text) {
-            var val = $ta.val();
-            if (val) {
-                $ta.val(val + '\n' + text);
-            } else {
-                $ta.val(text);
-            }
-            $ta.scrollTop($ta[0].scrollHeight);
-        }
-
-        addToTextarea(textArea,chatData.user + ": " + chatData.text);
+        addToTextarea(textArea, chatData.user + ": " + chatData.text);
     }
     socket.onclose = function (event) {
         console.log('socket close', event)
