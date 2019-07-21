@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'account',
     'game',
     'main_window',
+    'channels',
+    'tanks_game',
 ]
 
 MIDDLEWARE = [
@@ -73,8 +75,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'game.wsgi.application'
 
+ASGI_APPLICATION = 'game.routing.application'
 
-# Database
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+        # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {

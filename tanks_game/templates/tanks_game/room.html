@@ -1,0 +1,24 @@
+<!-- tanks_game/templates/tanks_game/room.html -->
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'tanks_game/css/room.css' %}?{{ uid }}">
+    <!--    Loading p5 files-->
+    <script type="text/javascript" src="{% static 'tanks_game/js/p5.js' %}?{{ uid }}"></script>
+    <script type="text/javascript" src="{% static 'tanks_game/js/p5.dom.js' %}?{{ uid }}"></script>
+    <script type="text/javascript" src="{% static 'tanks_game/js/p5.play.js' %}?{{ uid }}"></script>
+    <script type="text/javascript" src="{% static 'tanks_game/js/p5.sound.js' %}?{{ uid }}"></script>
+    <script type="text/javascript" src="{% static 'tanks_game/js/Data.js' %}?{{ uid }}"></script>
+    <div id="data1" value="{ room_name_json }"></div>
+    <script type="text/javascript" src="{% static 'tanks_game/js/chatHandler.js' %}?{{ uid }}"></script>
+    <script type="text/javascript" src="{% static 'tanks_game/js/main.js' %}?{{ uid }}"></script>
+    <script type="text/javascript" src="{% static 'tanks_game/js/Tank.js' %}?{{ uid }}"></script>
+    <meta charset="utf-8"/>
+    <title>Chat Room</title>
+</head>
+<body>
+<div id="c2"></div>
+</body>
+
+</html>

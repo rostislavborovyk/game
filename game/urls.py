@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import include
+from django.conf.urls import include, url
 from django.contrib.auth import urls as account_urls
 
 
@@ -23,4 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('account.urls'), name="accounts"),
     path('', include('main_window.urls'), name='main'),
+    url(r'^tanks_game/', include('tanks_game.urls')),
     ]
