@@ -13,6 +13,20 @@ class ChatConsumer(AsyncConsumer):
             'global',
             self.channel_name,
         )
+        myresponse = {
+            'user': self.scope['user'].username,
+            'type': 'online'
+        }
+        resp = json.dumps(myresponse)
+        await self.channel_layer.group_send(
+            'global',
+            {
+                'type': 'online_message',
+                'data':  resp,
+                'sender_channel_name': self.channel_name
+            }
+        )
+
         await self.send({
             'type': 'websocket.accept'
         })
@@ -24,6 +38,7 @@ class ChatConsumer(AsyncConsumer):
         myresponse = {
             'text': event.get('text'),
             'user': username,
+            'type': 'chat'
         }
         resp = json.dumps(myresponse)
         await self.channel_layer.group_send(
@@ -45,11 +60,34 @@ class ChatConsumer(AsyncConsumer):
     async def websocket_disconnect(self, event):
         print('closed', event)
         await self.delete_online_user(self.scope['user'])
+        myresponse = {
+            'user': self.scope['user'].username,
+            'type': 'offline'
+        }
+        resp = json.dumps(myresponse)
+        await self.channel_layer.group_send(
+            'global',
+            {
+                'type': 'chat_message',
+                'text': resp,
+            }
+        )
 
     @database_sync_to_async
     def create_online_user(self, user):
-        OnlineUser.objects.create(user=user)
+        try:
+            OnlineUser.objects.create(user=user)
+        except:
+            OnlineUser.objects.filter(user=user).delete()
+            OnlineUser.objects.create(user=user)
 
     @database_sync_to_async
     def delete_online_user(self, user):
         OnlineUser.objects.filter(user=user).delete()
+
+    async def online_message(self, event):
+        if self.channel_name != event['sender_channel_name']:
+            await self.send({
+                'type': 'websocket.send',
+                'text': event['data'],
+            })
