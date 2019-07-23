@@ -709,7 +709,7 @@ p5.prototype.deltaTime = 1;
 
 var now = Date.now();
 var then = Date.now();
-var INTERVAL_60 = 0.0166666; //60 fps
+var INTERVAL_60 = 0.0166666; //60 msPerFrame
 
 function updateDelta() {
 then = now;
