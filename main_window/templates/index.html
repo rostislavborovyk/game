@@ -51,6 +51,15 @@
         }
         $ta.scrollTop($ta[0].scrollHeight);
     }
+    function addToTextareaOnline($ta, text) {
+        var val = $ta.val();
+        if (val) {
+            $ta.val(val + text);
+        } else {
+            $ta.val(text);
+        }
+        $ta.scrollTop($ta[0].scrollHeight);
+    }
     socket.onopen = function (event) {
         console.log('socket open', event);
         formData.submit(function (e) {
@@ -68,10 +77,12 @@
             addToTextarea(textArea,chatData.user + ": " + chatData.text);
             console.log('send',event);
         }
+        // todo пофиксить баг с многимии окнами добавив проверку на вхождение  онлайн лист
         else if (chatData.type=== 'online' && $('#online').val().includes(chatData.user)!==true){
             console.log('online',event);
             const texti = $('#online');
-            texti.append(chatData.user+'\n');
+            addToTextareaOnline(texti,chatData.user+'\n');
+            console.log('yep')
         }
         else if (chatData.type === 'offline') {
             console.log('offline',event);
