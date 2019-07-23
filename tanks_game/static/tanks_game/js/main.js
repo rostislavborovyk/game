@@ -1,8 +1,8 @@
 var date = new Date();
 var myTank, opponentTank;
 var border_down_img, border_up_img, border_left_img, border_right_img;
-var objjj;
-
+var borders, border_group;
+var isCollide;
 
 function preload() {
     //----------- loading textures--------------------
@@ -16,7 +16,8 @@ function setup() {
     createCanvas(window.innerWidth, window.innerHeight);
     myTank = new Tank(0,0, [100, 255, 100]);
     opponentTank = new Tank(0,0, [255, 100, 100]);
-    objjj = new createBorderBox(border_left_img,border_right_img,border_up_img,border_down_img);
+    borders = new createBorderBox(border_left_img,border_right_img,border_up_img,border_down_img);
+    border_group = borders.group();
 
 
 }
@@ -24,21 +25,7 @@ function setup() {
 function draw() {
     background(180, 160, 120);
     msPerFrame();
-
-    objjj.drawBorderBox();
-
-
-
-    // push();
-    // fill(0, 255, 0);
-    // data1.setCords(mouseX, mouseY);
-    // rect(data1.x, data1.y, 100, 100);
-    // pop();
-    // push();
-    // fill(255, 0, 0);
-    // rect(data2.x, data2.y, 100, 100);
-    // pop();
-
+    borders.drawBorderBox();
     drawTanks();
     drawSprites();
 
@@ -55,11 +42,12 @@ function msPerFrame() {
 
 function drawTanks() {
     myTank.move();
+    isCollide = false;
+    myTank.sprite.collide(border_group, myTank.collision);
     data1.setCords(-myTank.translation.x, -myTank.translation.y, myTank.rotationAngle);
     opponentTank.sprite.position.x = width/2 + data2.x;
     opponentTank.sprite.position.y = height/2 + data2.y;
     opponentTank.rotationAngle = data2.angle;
     opponentTank.sprite.rotation = data2.angle;
-    
 }
 

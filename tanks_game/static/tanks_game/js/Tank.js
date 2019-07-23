@@ -10,15 +10,17 @@ function Tank(x, y, col) {
     this.isCollide = false;
 
     this.move = function () {
-        if (keyIsDown(87) && !this.isCollide){
+        if (keyIsDown(87) && !isCollide){
             this.translation.x -= this.speed*Math.cos(this.rotationAngle/180*Math.PI);
             this.translation.y -= this.speed*Math.sin(this.rotationAngle/180*Math.PI);
+            console.log(this.isCollide);
             chatSocket.send(JSON.stringify({
                 'message': [data1.x, data1.y, data1.angle]
             }));
 
         }
-        if (keyIsDown(83)&& !this.isCollide){
+        if (keyIsDown(83) && !isCollide){
+
             this.translation.x += this.speed*Math.cos(this.rotationAngle/180*Math.PI);
             this.translation.y += this.speed*Math.sin(this.rotationAngle/180*Math.PI);
             chatSocket.send(JSON.stringify({
@@ -45,6 +47,9 @@ function Tank(x, y, col) {
         translate(this.translation.x, this.translation.y);
         this.sprite.position.x = width / 2 - this.translation.x;
         this.sprite.position.y = height / 2 - this.translation.y;
-
+    };
+    this.collision = function () {
+        console.log("collide");
+        isCollide = true;
     }
 }
