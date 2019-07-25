@@ -1,2 +1,2 @@
-web: daphne project.asgi:channel_layer --port $PORT --bind 0.0.0.0 -v2
+web: daphne -b 0.0.0.0 -p 8001 game.routing:application
 worker: python manage.py runworker -v2
