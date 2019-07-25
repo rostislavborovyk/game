@@ -13,11 +13,12 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import django_heroku
 import django
+django.setup()
 from django.utils.crypto import get_random_string
 chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
 SECRET_KEY = get_random_string(50, chars)
 print(SECRET_KEY)
-django.setup()
+
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
