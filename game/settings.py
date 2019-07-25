@@ -11,9 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", __file__)
-import django
-django.setup()
+import django_heroku
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -146,3 +144,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 import dj_database_url
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
+django_heroku.settings(locals())
+
