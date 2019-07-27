@@ -15,7 +15,7 @@ import django_heroku
 import django
 SECRET_KEY = 'hw6tz+ot*e8#2ix75^emkk%ta@id5x+grk95nk%6rlt7^i7@ss'
 django.setup()
-
+settings.configure()
 
 
 
